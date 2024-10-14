@@ -78,8 +78,8 @@ Siga os passos abaixo para rodar este projeto localmente:
 1. Clone o repositório:
 
    ```bash
-   git clone https://github.com/seu-usuario/AgendaDeContatosAPI.git
-   cd AgendaDeContatosAPI
+   git clone https://github.com/GustavoRossii/Contatos
+   cd SistemaDeTarefas
    
   
 2. Configure a string de conexão no arquivo `appsettings.json` com os detalhes do seu banco de dados:
