@@ -8,7 +8,7 @@ public class Contato
     public string? Telefone {get; set;}
     public string? Email {get; set;}
     public string? Endereco {get; set;}
-    public DateTime CriadoEm {get; set;}
+    public DateTime CriadoEm {get; set;} = DateTime.Now;
     public DateTime AtualizadoEm {get; set;}
 
 }
