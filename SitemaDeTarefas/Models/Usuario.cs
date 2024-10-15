@@ -8,4 +8,6 @@ public class Usuario
     public string? Senha {get; set; }
     public DateTime Criado_em {get; set; }
 
+        public Agenda? Agenda { get; set; }
+
 }
