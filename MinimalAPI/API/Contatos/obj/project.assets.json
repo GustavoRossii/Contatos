@@ -2381,27 +2381,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\GuhRo\\.nuget\\packages\\": {}
+    "C:\\Users\\leona\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\MinimalAPI\\API\\Contatos\\Contatos.csproj",
+      "projectUniqueName": "D:\\DesSoftwareVisual\\Contatos\\MinimalAPI\\API\\Contatos\\Contatos.csproj",
       "projectName": "Contatos",
-      "projectPath": "D:\\MinimalAPI\\API\\Contatos\\Contatos.csproj",
-      "packagesPath": "C:\\Users\\GuhRo\\.nuget\\packages\\",
-      "outputPath": "D:\\MinimalAPI\\API\\Contatos\\obj\\",
+      "projectPath": "D:\\DesSoftwareVisual\\Contatos\\MinimalAPI\\API\\Contatos\\Contatos.csproj",
+      "packagesPath": "C:\\Users\\leona\\.nuget\\packages\\",
+      "outputPath": "D:\\DesSoftwareVisual\\Contatos\\MinimalAPI\\API\\Contatos\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\GuhRo\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\leona\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -2455,7 +2452,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.306/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

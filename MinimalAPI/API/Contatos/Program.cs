@@ -11,6 +11,11 @@ app.MapGet("/", () => "Contatos");
 
 app.MapPost("/api/contatos/cadastrar", ([FromBody] Contato contato, [FromServices] ContatoContext ctx) =>
 {
+    //Para garantir que o contato tenha nome
+    if (string.IsNullOrWhiteSpace(contato.Nome)){
+        return Results.BadRequest("A inclusão de um nome é obrigatória.");
+    }
+
     ctx.Contatos.Add(contato);
     ctx.SaveChanges();
     return Results.Created("", contato);
@@ -32,7 +37,7 @@ app.MapGet("/api/contatos/listar", ([FromServices] ContatoContext ctx) =>
     {
         return Results.Ok(ctx.Contatos.ToList());
     }
-    return Results.NotFound();
+    return Results.NotFound("Nenhum contato cadastrado");
 });
 
 app.MapDelete("/api/contatos/deletar/{id}", ([FromRoute] int id, [FromServices] ContatoContext ctx) =>
