@@ -21,6 +21,13 @@ app.MapPost("/api/contatos/cadastrar", ([FromBody] Contato contato, [FromService
     return Results.Created("", contato);
 });
 
+app.MapGet("/api/contatos/listar", ([FromServices] ContatoContext ctx) =>{
+    if(ctx.Contatos.Any()){
+        return Results.Ok(ctx.Contatos.ToList());
+    }
+    return Results.NotFound("Nenhum contato cadastrado");
+});
+
 app.MapGet("/api/contatos/buscar/{id}", ([FromRoute] int id, [FromServices] ContatoContext ctx) =>
 {
     Contato? contato = ctx.Contatos.Find(id);
@@ -28,30 +35,6 @@ app.MapGet("/api/contatos/buscar/{id}", ([FromRoute] int id, [FromServices] Cont
     {
         return Results.NotFound();
     }
-    return Results.Ok(contato);
-});
-
-app.MapGet("/api/contatos/listar", ([FromServices] ContatoContext ctx) =>
-{
-    if (ctx.Contatos.Any())
-    {
-        return Results.Ok(ctx.Contatos.ToList());
-    }
-    return Results.NotFound("Nenhum contato cadastrado");
-});
-
-app.MapDelete("/api/contatos/deletar/{id}", ([FromRoute] int id, [FromServices] ContatoContext ctx) =>
-{
-    Console.WriteLine($"Tentando deletar o contato com ID: {id}");
-    Contato? contato = ctx.Contatos.Find(id);
-    if (contato == null)
-    {
-        Console.WriteLine("Contato não encontrado.");
-        return Results.NotFound();
-    }
-    ctx.Contatos.Remove(contato);
-    ctx.SaveChanges();
-    Console.WriteLine("Contato deletado com sucesso.");
     return Results.Ok(contato);
 });
 
@@ -70,5 +53,22 @@ app.MapPut("/api/contatos/alterar/{id}", ([FromBody] Contato contatoAlterado, [F
     ctx.SaveChanges();
     return Results.Ok(contato);
 });
+
+app.MapDelete("/api/contatos/deletar/{id}", ([FromRoute] int id, [FromServices] ContatoContext ctx) =>
+{
+    Console.WriteLine($"Tentando deletar o contato com ID: {id}");
+    Contato? contato = ctx.Contatos.Find(id);
+    if (contato == null)
+    {
+        Console.WriteLine("Contato não encontrado.");
+        return Results.NotFound();
+    }
+    ctx.Contatos.Remove(contato);
+    ctx.SaveChanges();
+    Console.WriteLine("Contato deletado com sucesso.");
+    return Results.Ok(contato);
+});
+
+
 
 app.Run();
