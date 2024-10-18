@@ -5,11 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<AppDataContext>();
 var app = builder.Build();
 
 app.MapGet("/", () => "Contatos");
 
-app.MapPost("/api/contatos/cadastrar", ([FromBody] Contato contato, [FromServices] ContatoContext ctx) =>
+app.MapPost("/api/contatos/cadastrar", ([FromBody] Contato contato, [FromServices] AppDataContext ctx) =>
 {
     //Para garantir que o contato tenha nome
     if (string.IsNullOrWhiteSpace(contato.Nome)){
@@ -21,14 +22,14 @@ app.MapPost("/api/contatos/cadastrar", ([FromBody] Contato contato, [FromService
     return Results.Created("", contato);
 });
 
-app.MapGet("/api/contatos/listar", ([FromServices] ContatoContext ctx) =>{
+app.MapGet("/api/contatos/listar", ([FromServices] AppDataContext ctx) =>{
     if(ctx.Contatos.Any()){
         return Results.Ok(ctx.Contatos.ToList());
     }
     return Results.NotFound("Nenhum contato cadastrado");
 });
 
-app.MapGet("/api/contatos/buscar/{id}", ([FromRoute] int id, [FromServices] ContatoContext ctx) =>
+app.MapGet("/api/contatos/buscar/{id}", ([FromRoute] int id, [FromServices] AppDataContext ctx) =>
 {
     Contato? contato = ctx.Contatos.Find(id);
     if (contato is null)
@@ -38,7 +39,7 @@ app.MapGet("/api/contatos/buscar/{id}", ([FromRoute] int id, [FromServices] Cont
     return Results.Ok(contato);
 });
 
-app.MapPut("/api/contatos/alterar/{id}", ([FromBody] Contato contatoAlterado, [FromRoute] int id, [FromServices] ContatoContext ctx) =>
+app.MapPut("/api/contatos/alterar/{id}", ([FromBody] Contato contatoAlterado, [FromRoute] int id, [FromServices] AppDataContext ctx) =>
 {
     Contato? contato = ctx.Contatos.Find(id);
     if (contato is null)
@@ -54,7 +55,7 @@ app.MapPut("/api/contatos/alterar/{id}", ([FromBody] Contato contatoAlterado, [F
     return Results.Ok(contato);
 });
 
-app.MapDelete("/api/contatos/deletar/{id}", ([FromRoute] int id, [FromServices] ContatoContext ctx) =>
+app.MapDelete("/api/contatos/deletar/{id}", ([FromRoute] int id, [FromServices] AppDataContext ctx) =>
 {
     Console.WriteLine($"Tentando deletar o contato com ID: {id}");
     Contato? contato = ctx.Contatos.Find(id);

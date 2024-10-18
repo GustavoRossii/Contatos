@@ -10,7 +10,7 @@ public class Agendas
     public int UsuarioId { get; set; }
 
     [Required(ErrorMessage = "O nome da agenda é obrigatório.")]
-    public string Nome { get; set; }
+    public string? Nome { get; set; }
 
-    public DateTime CriadoEm { get; set; }
+    public DateTime CriadoEm { get; set; } = DateTime.Now;
 }

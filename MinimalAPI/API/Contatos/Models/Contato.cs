@@ -8,7 +8,7 @@ public class Contato
         public int Id { get; set; }  
 
         public int Agenda_id { get; set; }
-        public string Nome { get; set; }  
+        public string? Nome { get; set; }  
 
         [EmailAddress(ErrorMessage = "E-mail inválido.")]
         public string? Email { get; set; }  
@@ -18,7 +18,7 @@ public class Contato
 
         public string? Endereco { get; set; }
 
-        public DateTime DataCadastro { get; set; } = DateTime.UtcNow;
+        public DateTime DataCadastro { get; set; } = DateTime.Now;
 
         public DateTime AtualizadoEm { get; set; } //IMPLEMENTAR ISSO AQUI DIREITO DEPOIS
 }
