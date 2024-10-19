@@ -70,6 +70,71 @@ app.MapDelete("/api/contatos/deletar/{id}", ([FromRoute] int id, [FromServices] 
     return Results.Ok(contato);
 });
 
+//FUNCIONALIDADES DE USUARIO -------------------------------------------
+
+app.MapPost("/api/usuarios/cadastrar", ([FromBody] Usuarios usuario, [FromServices] AppDataContext ctx) =>
+{
+    //Para garantir que o contato tenha nome
+    if (string.IsNullOrWhiteSpace(usuario.Nome)){
+        return Results.BadRequest("A inclusão de um nome é obrigatória.");
+    }
+
+    ctx.Usuarios.Add(usuario);
+    ctx.SaveChanges();
+    return Results.Created("", usuario);
+});
+
+
+app.MapGet("/api/usuarios/listar", ([FromServices] AppDataContext ctx) =>{
+    if(ctx.Usuarios.Any()){
+        return Results.Ok(ctx.Usuarios.ToList());
+    }
+    return Results.NotFound("Nenhum contato cadastrado");
+});
+
+
+app.MapGet("/api/usuarios/buscar/{id}", ([FromRoute] int id, [FromServices] AppDataContext ctx) =>
+{
+    Usuarios? usuario = ctx.Usuarios.Find(id);
+    if (usuario is null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(usuario);
+});
+
+app.MapPut("/api/usuarios/alterar/{id}", ([FromBody] Usuarios usuarioAlterado, [FromRoute] int id, [FromServices] AppDataContext ctx) =>
+{
+    Usuarios? usuario = ctx.Usuarios.Find(id);
+    if (usuario is null)
+    {
+        return Results.NotFound();
+    }
+    usuario.Nome = usuarioAlterado.Nome;
+    usuario.Email = usuarioAlterado.Email;
+
+    ctx.Usuarios.Update(usuario);
+    ctx.SaveChanges();
+    return Results.Ok(usuario);
+});
+
+
+app.MapDelete("/api/usuarios/deletar/{id}", ([FromRoute] int id, [FromServices] AppDataContext ctx) =>
+{
+    Console.WriteLine($"Tentando deletar o usuario com ID: {id}");
+    Usuarios? usuario = ctx.Usuarios.Find(id);
+    if (usuario == null)
+    {
+        Console.WriteLine("Usuario não encontrado.");
+        return Results.NotFound();
+    }
+    ctx.Usuarios.Remove(usuario);
+    ctx.SaveChanges();
+    Console.WriteLine("Usuario deletado com sucesso.");
+    return Results.Ok(usuario);
+});
+
+
 
 
 app.Run();
