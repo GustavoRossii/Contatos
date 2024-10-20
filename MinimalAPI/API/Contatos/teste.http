@@ -18,7 +18,7 @@ GET http://localhost:5144/api/usuarios/listar
 ### Buscar usuario 
 GET http://localhost:5144/api/usuarios/buscar/leoTeste@gmail.com
 
-### Atualizar contato 
+### Atualizar usuario 
 PUT http://localhost:5144/api/usuarios/alterar/leoTeste@gmail.com/abc123
 Content-Type: application/json
 
