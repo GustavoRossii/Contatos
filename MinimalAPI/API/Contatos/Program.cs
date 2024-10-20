@@ -264,6 +264,32 @@ app.MapGet("/api/usuarios/listar", ([FromServices] AppDataContext ctx) =>
     return Results.NotFound("Nenhum usuário cadastrado.");
 });
 
+//Para listar os usuarios sem a senha
+// app.MapGet("/api/usuarios/listar", ([FromServices] AppDataContext ctx) =>
+// {
+//     var usuarios = ctx.Usuarios.ToList();
+//     var usuariosSemSenha = new List<Usuario>();
+
+//     if (usuarios.Any())
+//     {
+//         foreach (var usuario in usuarios)
+//         {
+//             // Criar uma cópia do usuário sem a senha
+//             usuariosSemSenha.Add(new Usuario
+//             {
+//                 Id = usuario.Id,
+//                 Nome = usuario.Nome,
+//                 Email = usuario.Email,
+//                 // Não inclua a senha
+//                 // Outros campos que você deseja incluir
+//             });
+//         }
+
+//         return Results.Ok(usuariosSemSenha);
+//     }
+
+//     return Results.NotFound("Nenhum usuário cadastrado.");
+// });
 
 
 //Buscar usuario com base em seu email

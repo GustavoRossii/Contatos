@@ -22,8 +22,7 @@ namespace Contatos.Migrations
                     Email = table.Column<string>(type: "TEXT", nullable: true),
                     Celular = table.Column<string>(type: "TEXT", nullable: true),
                     Endereco = table.Column<string>(type: "TEXT", nullable: true),
-                    DataCadastro = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    AtualizadoEm = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    DataCadastro = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

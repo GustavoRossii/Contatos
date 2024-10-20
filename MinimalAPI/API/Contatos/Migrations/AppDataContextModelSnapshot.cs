@@ -49,9 +49,6 @@ namespace Contatos.Migrations
                     b.Property<int>("AgendaId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("AtualizadoEm")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Celular")
                         .HasColumnType("TEXT");
 

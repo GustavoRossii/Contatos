@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Contatos.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    [Migration("20241020193118_InitialCreate")]
+    [Migration("20241020194659_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -51,9 +51,6 @@ namespace Contatos.Migrations
 
                     b.Property<int>("AgendaId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("AtualizadoEm")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Celular")
                         .HasColumnType("TEXT");
