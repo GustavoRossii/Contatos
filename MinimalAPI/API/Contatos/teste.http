@@ -6,31 +6,66 @@ POST http://localhost:5144/api/contatos/cadastrar
 Content-Type: application/json
 
 {
-  "nome": "Manoel Gomes",
-  "email": "manoel@canetaazul.com",
-  "celular": "11987654321",
-  "endereco": "Rua Professor Pedro Viriato Parigot de Souza 5300"
+  "usuario": {
+    "email": "leoTeste@gmail.com",
+    "senha": "abc123"
+  },
+  "contato": {
+    "nome": "Manoel Gomes",
+    "email": "manoel@canetaazul.com",
+    "celular": "11987654321",
+    "endereco": "Rua Professor Pedro Viriato Parigot de Souza 5300"
+  }
 }
+
 
 ### Listar contatos
 GET http://localhost:5144/api/contatos/listar
+Content-Type: application/json
+
+{
+  "nome": "Leonardo Heredia",
+  "email": "leoTeste@gmail.com",
+  "senha": "abc123"
+}
+
 
 ### Buscar contato 
-GET http://localhost:5144/api/contatos/buscar/1
+GET http://localhost:5144/api/contatos/buscar/11987654321
+Content-Type: application/json
+
+{
+  "nome": "Leonardo Heredia",
+  "email": "leoTeste@gmail.com",
+  "senha": "abc123"
+}
 
 ### Atualizar contato 
 PUT http://localhost:5144/api/contatos/alterar/1
 Content-Type: application/json
 
 {
-  "nome": "Manoel Gomes aaa",
-  "email": "manoel@canetaazul.com",
-  "celular": "11987654321",
-  "endereco": "Rua Professor Pedro Viriato Parigot de Souza 5300"
+  "usuario": {
+    "email": "leoTeste@gmail.com",
+    "senha": "abc123"
+  },
+  "contato": {
+    "nome": "Manoel Gomes aaa",
+    "email": "manoel@canetaazul.com",
+    "celular": "11987654321",
+    "endereco": "Rua Professor Pedro Viriato Parigot de Souza 5300"
+  }
 }
 
 ### Deletar contato 
-DELETE http://localhost:5144/api/contatos/deletar/1
+DELETE http://localhost:5144/api/contatos/deletar/11987654321
+Content-Type: application/json
+
+{
+  "nome": "Leonardo Heredia",
+  "email": "leoTeste@gmail.com",
+  "senha": "abc123"
+}
 
 
 ### Cadastrar usuario
@@ -47,10 +82,10 @@ Content-Type: application/json
 GET http://localhost:5144/api/usuarios/listar
 
 ### Buscar usuario 
-GET http://localhost:5144/api/usuarios/buscar/2
+GET http://localhost:5144/api/usuarios/buscar/leoTeste@gmail.com
 
 ### Atualizar contato 
-PUT http://localhost:5144/api/usuarios/alterar/1
+PUT http://localhost:5144/api/usuarios/alterar/leoTeste@gmail.com/abc123
 Content-Type: application/json
 
 {
@@ -60,6 +95,6 @@ Content-Type: application/json
 }
 
 ### Deletar contato 
-DELETE http://localhost:5144/api/usuarios/deletar/1
+DELETE http://localhost:5144/api/usuarios/deletar/leoTeste@gmail.com/abc123
 
 

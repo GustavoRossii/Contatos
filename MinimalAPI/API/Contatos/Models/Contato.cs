@@ -23,5 +23,5 @@ public class Contato
 
     public DateTime AtualizadoEm { get; set; }
 
-    public Agendas? Agenda { get; set; }
+    public Agenda? Agenda { get; set; }
 }

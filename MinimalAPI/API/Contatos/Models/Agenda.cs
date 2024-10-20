@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Contatos.Models;
 
-public class Agendas
+public class Agenda
 {
     public int Id { get; set; }
 
@@ -15,7 +15,7 @@ public class Agendas
 
     public DateTime CriadoEm { get; set; } = DateTime.Now;
 
-    public Usuarios? Usuario { get; set; }
+    public Usuario? Usuario { get; set; }
 
     public ICollection<Contato>? Contatos { get; set; }
 }

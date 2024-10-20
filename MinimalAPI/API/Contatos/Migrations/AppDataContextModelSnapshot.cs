@@ -17,7 +17,7 @@ namespace Contatos.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
 
-            modelBuilder.Entity("Contatos.Models.Agendas", b =>
+            modelBuilder.Entity("Contatos.Models.Agenda", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,7 +74,7 @@ namespace Contatos.Migrations
                     b.ToTable("Contatos");
                 });
 
-            modelBuilder.Entity("Contatos.Models.Usuarios", b =>
+            modelBuilder.Entity("Contatos.Models.Usuario", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -101,9 +101,9 @@ namespace Contatos.Migrations
                     b.ToTable("Usuarios");
                 });
 
-            modelBuilder.Entity("Contatos.Models.Agendas", b =>
+            modelBuilder.Entity("Contatos.Models.Agenda", b =>
                 {
-                    b.HasOne("Contatos.Models.Usuarios", "Usuario")
+                    b.HasOne("Contatos.Models.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -114,7 +114,7 @@ namespace Contatos.Migrations
 
             modelBuilder.Entity("Contatos.Models.Contato", b =>
                 {
-                    b.HasOne("Contatos.Models.Agendas", "Agenda")
+                    b.HasOne("Contatos.Models.Agenda", "Agenda")
                         .WithMany("Contatos")
                         .HasForeignKey("AgendaId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -123,7 +123,7 @@ namespace Contatos.Migrations
                     b.Navigation("Agenda");
                 });
 
-            modelBuilder.Entity("Contatos.Models.Agendas", b =>
+            modelBuilder.Entity("Contatos.Models.Agenda", b =>
                 {
                     b.Navigation("Contatos");
                 });
