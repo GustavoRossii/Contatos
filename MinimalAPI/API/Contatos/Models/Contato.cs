@@ -21,7 +21,4 @@ public class Contato
 
     public DateTime DataCadastro { get; set; } = DateTime.Now;
 
-    public DateTime AtualizadoEm { get; set; }
-
-    public Agenda? Agenda { get; set; }
 }

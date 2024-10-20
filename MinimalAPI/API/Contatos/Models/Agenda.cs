@@ -17,5 +17,4 @@ public class Agenda
 
     public Usuario? Usuario { get; set; }
 
-    public ICollection<Contato>? Contatos { get; set; }
 }

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Contatos.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    [Migration("20241020165155_InitialCreate")]
+    [Migration("20241020193118_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -72,8 +72,6 @@ namespace Contatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AgendaId");
-
                     b.ToTable("Contatos");
                 });
 
@@ -113,22 +111,6 @@ namespace Contatos.Migrations
                         .IsRequired();
 
                     b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("Contatos.Models.Contato", b =>
-                {
-                    b.HasOne("Contatos.Models.Agenda", "Agenda")
-                        .WithMany("Contatos")
-                        .HasForeignKey("AgendaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Agenda");
-                });
-
-            modelBuilder.Entity("Contatos.Models.Agenda", b =>
-                {
-                    b.Navigation("Contatos");
                 });
 #pragma warning restore 612, 618
         }

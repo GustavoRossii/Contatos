@@ -5,55 +5,63 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
+
 builder.Services.AddDbContext<AppDataContext>();
 var app = builder.Build();
 
 app.MapGet("/", () => "Contatos");
 
-//Cadastrar Contatos
-app.MapPost("/api/contatos/cadastrar", ([FromBody] dynamic requestBody, [FromServices] AppDataContext ctx) =>
+// Cadastrar Contatos
+app.MapPost("/api/contatos/cadastrar/{email}/{senha}", ([FromRoute] string email, [FromRoute] string senha, [FromBody] Contato contato, [FromServices] AppDataContext ctx) =>
 {
-    if (requestBody.usuario == null || requestBody.contato == null)
+    if (contato == null)
     {
         return Results.BadRequest("Dados incompletos na requisição.");
     }
-
-    var usuarioJson = requestBody.usuario;
-    var contatoJson = requestBody.contato;
-
-    string? email = usuarioJson.email;
-    string? senha = usuarioJson.senha;
 
     if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(senha))
     {
         return Results.BadRequest("Email ou senha do usuário são obrigatórios.");
     }
 
-    Usuario? usuario = ctx.Usuarios.FirstOrDefault(u => u.Email == email && u.Senha == senha);
-
-    if (usuario is null)
+    // Verifica se o usuário existe
+    Usuario? usuarioDb = ctx.Usuarios.FirstOrDefault(u => u.Email == email && u.Senha == senha);
+    if (usuarioDb is null)
     {
         return Results.NotFound("Usuário não encontrado.");
     }
 
-    Agenda? agenda = ctx.Agendas.FirstOrDefault(a => a.UsuarioId == usuario.Id);
-
+    Agenda? agenda = ctx.Agendas.FirstOrDefault(a => a.UsuarioId == usuarioDb.Id);
     if (agenda is null)
     {
         return Results.NotFound("Agenda não encontrada.");
     }
 
-    if (string.IsNullOrWhiteSpace((string)contatoJson.nome))
+    if (string.IsNullOrWhiteSpace(contato.Nome))
     {
         return Results.BadRequest("A inclusão de um nome é obrigatória.");
     }
 
+    bool contatoExistente = ctx.Contatos.Any(c => c.AgendaId == agenda.Id && 
+        (c.Email == contato.Email || c.Celular == contato.Celular));
+
+    if (contatoExistente)
+    {
+        return Results.Conflict("Já existe um contato cadastrado com este email ou número.");
+    }
+
     Contato novoContato = new Contato
     {
-        Nome = contatoJson.nome,
-        Email = contatoJson.email,
-        Celular = contatoJson.celular,
-        Endereco = contatoJson.endereco,
+        Nome = contato.Nome,
+        Email = contato.Email,
+        Celular = contato.Celular,
+        Endereco = contato.Endereco,
         AgendaId = agenda.Id,
         DataCadastro = DateTime.Now
     };
@@ -61,13 +69,18 @@ app.MapPost("/api/contatos/cadastrar", ([FromBody] dynamic requestBody, [FromSer
     ctx.Contatos.Add(novoContato);
     ctx.SaveChanges();
 
-    return Results.Created("", novoContato);
+    return Results.Created("/api/contatos/" + novoContato.Id, novoContato);
 });
 
 
-//Listar os contatos
-app.MapGet("/api/contatos/listar", ([FromBody] Usuario? usuario, [FromServices] AppDataContext ctx) =>
+// Listar os contatos
+app.MapGet("/api/contatos/listar", ([FromBody] Usuario usuario, [FromServices] AppDataContext ctx) =>
 {
+    if (usuario == null || string.IsNullOrWhiteSpace(usuario.Email) || string.IsNullOrWhiteSpace(usuario.Senha))
+    {
+        return Results.BadRequest("Email e senha são obrigatórios.");
+    }
+
     Usuario? usuarioDb = ctx.Usuarios.FirstOrDefault(u => u.Email == usuario.Email && u.Senha == usuario.Senha);
     if (usuarioDb is null)
     {
@@ -89,6 +102,7 @@ app.MapGet("/api/contatos/listar", ([FromBody] Usuario? usuario, [FromServices] 
 
     return Results.NotFound("Nenhum contato cadastrado para essa agenda.");
 });
+
 
 
 //Buscar contatos com base em seu numero e no usuario que esta buscando
@@ -125,18 +139,12 @@ app.MapGet("/api/contatos/buscar/{celular}", ([FromRoute] string celular, [FromB
 
 
 //Alterar contato com base em seu numero
-app.MapPut("/api/contatos/alterar/{numero}", ([FromBody] dynamic requestBody, [FromRoute] string numero, [FromServices] AppDataContext ctx) =>
+app.MapPut("/api/contatos/alterar/{email}/{senha}/{numero}", ([FromRoute] string email, [FromRoute] string senha, [FromRoute] string numero, [FromBody] Contato contato, [FromServices] AppDataContext ctx) =>
 {
-    if (requestBody.usuario == null || requestBody.contato == null)
+    if (contato == null)
     {
         return Results.BadRequest("Dados incompletos na requisição.");
     }
-
-    var usuarioJson = requestBody.usuario;
-    var contatoJson = requestBody.contato;
-
-    string? email = usuarioJson.email;
-    string? senha = usuarioJson.senha;
 
     if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(senha))
     {
@@ -144,42 +152,42 @@ app.MapPut("/api/contatos/alterar/{numero}", ([FromBody] dynamic requestBody, [F
     }
 
     Usuario? usuario = ctx.Usuarios.FirstOrDefault(u => u.Email == email && u.Senha == senha);
+
     if (usuario is null)
     {
         return Results.NotFound("Usuário não encontrado.");
     }
 
     Agenda? agenda = ctx.Agendas.FirstOrDefault(a => a.UsuarioId == usuario.Id);
+
     if (agenda is null)
     {
         return Results.NotFound("Agenda não encontrada.");
     }
 
-    if (string.IsNullOrWhiteSpace((string)contatoJson.nome))
+    if (string.IsNullOrWhiteSpace(contato.Nome))
     {
         return Results.BadRequest("A inclusão de um nome é obrigatória.");
     }
 
-    Contato? contato = ctx.Contatos.FirstOrDefault(c => c.AgendaId == agenda.Id && c.Celular == numero);
-    if (contato is null)
+    Contato? contatoExistente = ctx.Contatos.FirstOrDefault(c => c.AgendaId == agenda.Id && c.Celular == numero);
+
+    if (contatoExistente is null)
     {
         return Results.NotFound("Contato não encontrado.");
     }
 
-    contato.Nome = (string)contatoJson.nome;
-    contato.Email = (string)contatoJson.email;
-    contato.Celular = (string)contatoJson.celular;
-    contato.Endereco = (string)contatoJson.endereco;
+    contatoExistente.Nome = contato.Nome;
+    contatoExistente.Email = contato.Email;
+    contatoExistente.Celular = contato.Celular;
+    contatoExistente.Endereco = contato.Endereco;
 
-    ctx.Contatos.Update(contato);
+    ctx.Contatos.Update(contatoExistente);
     ctx.SaveChanges();
 
-    return Results.Ok(contato);
+    return Results.Ok(contatoExistente);
 });
 
-
-
-//Deletar contato com base em seu numero
 // Deletar contato com base em seu número
 app.MapDelete("/api/contatos/deletar/{numero}", ([FromRoute] string numero, [FromBody] Usuario? usuario, [FromServices] AppDataContext ctx) =>
 {
@@ -223,11 +231,14 @@ app.MapPost("/api/usuarios/cadastrar", ([FromBody] Usuario usuario, [FromService
     {
         return Results.BadRequest("A inclusão de um nome é obrigatória.");
     }
+    if (ctx.Usuarios.Any(u => u.Email == usuario.Email))
+    {
+        return Results.BadRequest("Um usuário com este e-mail já existe.");
+    }
 
     ctx.Usuarios.Add(usuario);
     ctx.SaveChanges();
 
-    // Criar agenda
     Agenda agenda = new Agenda
     {
         UsuarioId = usuario.Id,
@@ -240,6 +251,7 @@ app.MapPost("/api/usuarios/cadastrar", ([FromBody] Usuario usuario, [FromService
 
     return Results.Created("", usuario);
 });
+
 
 
 //Listar usuarios

@@ -2,20 +2,14 @@
 GET http://localhost:5144/
 
 ### Cadastrar novo contato 
-POST http://localhost:5144/api/contatos/cadastrar
+POST http://localhost:5144/api/contatos/cadastrar/leoTeste@gmail.com/abc123
 Content-Type: application/json
 
 {
-  "usuario": {
-    "email": "leoTeste@gmail.com",
-    "senha": "abc123"
-  },
-  "contato": {
     "nome": "Manoel Gomes",
     "email": "manoel@canetaazul.com",
     "celular": "11987654321",
     "endereco": "Rua Professor Pedro Viriato Parigot de Souza 5300"
-  }
 }
 
 
@@ -41,20 +35,14 @@ Content-Type: application/json
 }
 
 ### Atualizar contato 
-PUT http://localhost:5144/api/contatos/alterar/1
+PUT http://localhost:5144/api/contatos/alterar/leoTeste@gmail.com/abc123/11987654321
 Content-Type: application/json
 
 {
-  "usuario": {
-    "email": "leoTeste@gmail.com",
-    "senha": "abc123"
-  },
-  "contato": {
     "nome": "Manoel Gomes aaa",
     "email": "manoel@canetaazul.com",
     "celular": "11987654321",
     "endereco": "Rua Professor Pedro Viriato Parigot de Souza 5300"
-  }
 }
 
 ### Deletar contato 

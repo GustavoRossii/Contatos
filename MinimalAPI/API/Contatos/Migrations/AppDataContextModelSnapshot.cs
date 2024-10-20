@@ -69,8 +69,6 @@ namespace Contatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AgendaId");
-
                     b.ToTable("Contatos");
                 });
 
@@ -110,22 +108,6 @@ namespace Contatos.Migrations
                         .IsRequired();
 
                     b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("Contatos.Models.Contato", b =>
-                {
-                    b.HasOne("Contatos.Models.Agenda", "Agenda")
-                        .WithMany("Contatos")
-                        .HasForeignKey("AgendaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Agenda");
-                });
-
-            modelBuilder.Entity("Contatos.Models.Agenda", b =>
-                {
-                    b.Navigation("Contatos");
                 });
 #pragma warning restore 612, 618
         }
