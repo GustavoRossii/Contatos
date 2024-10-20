@@ -2,6 +2,9 @@
 
 Este é o repositório da API para uma **Agenda de Contatos**, desenvolvida em **C#** utilizando **ASP.NET Core** e **Entity Framework Core**. A API permite que os usuários gerenciem suas agendas, criando, editando e excluindo contatos.
 
+⚠️ **Atenção:** Para testar a Minimal API, acesse o arquivo `MinimalApi/API/Contatos`.
+
+
 ## Índice
 
 - [Sobre o Projeto](#sobre-o-projeto)
