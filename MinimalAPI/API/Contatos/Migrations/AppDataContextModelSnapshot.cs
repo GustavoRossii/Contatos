@@ -35,6 +35,8 @@ namespace Contatos.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UsuarioId");
+
                     b.ToTable("Agendas");
                 });
 
@@ -44,7 +46,7 @@ namespace Contatos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Agenda_id")
+                    b.Property<int>("AgendaId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("AtualizadoEm")
@@ -66,6 +68,8 @@ namespace Contatos.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AgendaId");
 
                     b.ToTable("Contatos");
                 });
@@ -95,6 +99,33 @@ namespace Contatos.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("Contatos.Models.Agendas", b =>
+                {
+                    b.HasOne("Contatos.Models.Usuarios", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Contatos.Models.Contato", b =>
+                {
+                    b.HasOne("Contatos.Models.Agendas", "Agenda")
+                        .WithMany("Contatos")
+                        .HasForeignKey("AgendaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Agenda");
+                });
+
+            modelBuilder.Entity("Contatos.Models.Agendas", b =>
+                {
+                    b.Navigation("Contatos");
                 });
 #pragma warning restore 612, 618
         }
