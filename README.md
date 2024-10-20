@@ -8,7 +8,6 @@ Este é o repositório da API para uma **Agenda de Contatos**, desenvolvida em *
 - [Estrutura do Banco de Dados](#estrutura-do-banco-de-dados)
 - [Instalação](#instalação)
 - [Uso](#uso)
-- [Endpoints da API](#endpoints-da-api)
 - [Esquema de Arquitetura do Projeto](#esquema-de-arquitetura-do-projeto)
 
 ## Sobre o Projeto
@@ -115,31 +114,9 @@ Siga os passos abaixo para rodar este projeto localmente:
 A API oferece os seguintes recursos:
 
 - **Gerenciamento de Usuários**: Criação, atualização, leitura e exclusão de usuários.
-- **Gerenciamento de Agendas**: Criação de múltiplas agendas para cada usuário.
+- **Gerenciamento de Agendas**: Criação de uma agenda por usuário.
 - **Gerenciamento de Contatos**: Adicionar, editar e excluir contatos de uma agenda específica.
 
-## Endpoints da API
-
-### Usuários
-- `GET /api/usuarios`: Retorna todos os usuários.
-- `GET /api/usuarios/{id}`: Retorna um usuário por ID.
-- `POST /api/usuarios`: Cria um novo usuário.
-- `PUT /api/usuarios/{id}`: Atualiza um usuário existente.
-- `DELETE /api/usuarios/{id}`: Deleta um usuário.
-
-### Agendas
-- `GET /api/agendas`: Retorna todas as agendas.
-- `GET /api/agendas/{id}`: Retorna uma agenda por ID.
-- `POST /api/agendas`: Cria uma nova agenda.
-- `PUT /api/agendas/{id}`: Atualiza uma agenda existente.
-- `DELETE /api/agendas/{id}`: Deleta uma agenda.
-
-### Contatos
-- `GET /api/contatos`: Retorna todos os contatos.
-- `GET /api/contatos/{id}`: Retorna um contato por ID.
-- `POST /api/contatos`: Cria um novo contato.
-- `PUT /api/contatos/{id}`: Atualiza um contato existente.
-- `DELETE /api/contatos/{id}`: Deleta um contato.
 
 ## Esquema de Arquitetura do Projeto
 
