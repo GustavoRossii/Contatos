@@ -1,6 +1,36 @@
 ### 
 GET http://localhost:5144/
 
+
+### Cadastrar usuario
+POST http://localhost:5144/api/usuarios/cadastrar
+Content-Type: application/json
+
+{
+  "nome": "Leonardo Heredia",
+  "email": "leoTeste@gmail.com",
+  "senha": "abc123"
+}
+
+### Listar usuarios
+GET http://localhost:5144/api/usuarios/listar
+
+### Buscar usuario 
+GET http://localhost:5144/api/usuarios/buscar/leoTeste@gmail.com
+
+### Atualizar contato 
+PUT http://localhost:5144/api/usuarios/alterar/leoTeste@gmail.com/abc123
+Content-Type: application/json
+
+{
+  "nome": "Leonardo Heredia",
+  "email": "leoTeste@yahoo.com",
+  "senha": "abc123"
+}
+
+### Deletar contato 
+DELETE http://localhost:5144/api/usuarios/deletar/leoTeste@gmail.com/abc123
+
 ### Cadastrar novo contato 
 POST http://localhost:5144/api/contatos/cadastrar/leoTeste@gmail.com/abc123
 Content-Type: application/json
@@ -54,35 +84,4 @@ Content-Type: application/json
   "email": "leoTeste@gmail.com",
   "senha": "abc123"
 }
-
-
-### Cadastrar usuario
-POST http://localhost:5144/api/usuarios/cadastrar
-Content-Type: application/json
-
-{
-  "nome": "Leonardo Heredia",
-  "email": "leoTeste@gmail.com",
-  "senha": "abc123"
-}
-
-### Listar usuarios
-GET http://localhost:5144/api/usuarios/listar
-
-### Buscar usuario 
-GET http://localhost:5144/api/usuarios/buscar/leoTeste@gmail.com
-
-### Atualizar contato 
-PUT http://localhost:5144/api/usuarios/alterar/leoTeste@gmail.com/abc123
-Content-Type: application/json
-
-{
-  "nome": "Leonardo Heredia",
-  "email": "leoTeste@yahoo.com",
-  "senha": "abc123"
-}
-
-### Deletar contato 
-DELETE http://localhost:5144/api/usuarios/deletar/leoTeste@gmail.com/abc123
-
 
