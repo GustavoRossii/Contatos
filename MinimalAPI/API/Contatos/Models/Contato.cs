@@ -19,4 +19,12 @@ public class Contato
 
     public DateTime DataCadastro { get; set; } = DateTime.Now;
 
+
+    //Campos do endereço
+    public string? Estado { get; set; }
+    public string? Cidade { get; set; }
+    public string? Bairro { get; set; }
+    public string? Rua { get; set; }
+    public int? Numero { get; set; }
+
 }

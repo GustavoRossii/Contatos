@@ -39,7 +39,11 @@ Content-Type: application/json
     "nome": "Eduardo",
     "email": "Eduardo@gmail.com",
     "celular": "11987654322",
-    "endereco": "Rua Professor Pedro Viriato Parigot de Souza 5300"
+    "estado": "SP",
+    "cidade": "São Paulo",
+    "bairro": "Centro",
+    "rua": "Rua das Flores",
+    "numero": 123
 }
 
 
@@ -55,7 +59,7 @@ Content-Type: application/json
 
 
 ### Buscar contato 
-GET http://localhost:5144/api/contatos/buscar/11987654321
+GET http://localhost:5144/api/contatos/buscar/11987654322
 Content-Type: application/json
 
 {
