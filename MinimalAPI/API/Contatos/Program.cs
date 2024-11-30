@@ -6,6 +6,18 @@ using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -14,6 +26,8 @@ builder.Services.AddControllers()
 
 builder.Services.AddDbContext<AppDataContext>();
 var app = builder.Build();
+
+app.UseCors("AllowAll");
 
 app.MapGet("/", () => "Contatos");
 
@@ -56,20 +70,41 @@ app.MapPost("/api/contatos/cadastrar/{email}/{senha}", ([FromRoute] string email
         return Results.Conflict("Já existe um contato cadastrado com este email ou número.");
     }
 
+     if (string.IsNullOrWhiteSpace(contato.Estado) || 
+        string.IsNullOrWhiteSpace(contato.Cidade) || 
+        string.IsNullOrWhiteSpace(contato.Bairro) || 
+        string.IsNullOrWhiteSpace(contato.Rua) || 
+        contato.Numero is null)
+    {
+        return Results.BadRequest("Todos os campos do endereço são obrigatórios.");
+    }
+
     Contato novoContato = new Contato
     {
         Nome = contato.Nome,
         Email = contato.Email,
         Celular = contato.Celular,
-        Endereco = contato.Endereco,
         AgendaId = agenda.Id,
         DataCadastro = DateTime.Now
     };
-
     ctx.Contatos.Add(novoContato);
     ctx.SaveChanges();
 
-    return Results.Created("/api/contatos/" + novoContato.Id, novoContato);
+
+    // Cria o endereço vinculado ao contato
+    Endereco novoEndereco = new Endereco
+    {
+        ContatoId = novoContato.Id,
+        Estado = contato.Estado,
+        Cidade = contato.Cidade,
+        Bairro = contato.Bairro,
+        Rua = contato.Rua,
+        Numero = contato.Numero
+    };
+    ctx.Enderecos.Add(novoEndereco);
+    ctx.SaveChanges();
+
+    return Results.Created($"/api/contatos/{novoContato.Id}", new { Contato = novoContato, Endereco = novoEndereco });
 });
 
 
@@ -81,27 +116,42 @@ app.MapGet("/api/contatos/listar", ([FromBody] Usuario usuario, [FromServices] A
         return Results.BadRequest("Email e senha são obrigatórios.");
     }
 
+    // Verifica se o usuário existe
     Usuario? usuarioDb = ctx.Usuarios.FirstOrDefault(u => u.Email == usuario.Email && u.Senha == usuario.Senha);
     if (usuarioDb is null)
     {
         return Results.NotFound("Usuário não encontrado.");
     }
 
+    // Verifica se a agenda do usuário existe
     Agenda? agenda = ctx.Agendas.FirstOrDefault(a => a.UsuarioId == usuarioDb.Id);
     if (agenda is null)
     {
         return Results.NotFound("Agenda não encontrada.");
     }
 
-    var contatos = ctx.Contatos.Where(c => c.AgendaId == agenda.Id).ToList();
+    // Recupera contatos e seus endereços
+    var contatos = ctx.Contatos
+        .Where(c => c.AgendaId == agenda.Id)
+        .Select(c => new
+        {
+            c.Id,
+            c.Nome,
+            c.Email,
+            c.Celular,
+            c.DataCadastro,
+            Endereco = ctx.Enderecos.FirstOrDefault(e => e.ContatoId == c.Id)
+        })
+        .ToList();
 
-    if (contatos.Any())
+    if (!contatos.Any())
     {
-        return Results.Ok(contatos);
+        return Results.NotFound("Nenhum contato cadastrado para essa agenda.");
     }
 
-    return Results.NotFound("Nenhum contato cadastrado para essa agenda.");
+    return Results.Ok(contatos);
 });
+
 
 
 
@@ -134,7 +184,28 @@ app.MapGet("/api/contatos/buscar/{celular}", ([FromRoute] string celular, [FromB
         return Results.NotFound("Contato não encontrado.");
     }
 
-    return Results.Ok(contato);
+    // Busca o endereço relacionado ao contato
+    Endereco? endereco = ctx.Enderecos.FirstOrDefault(e => e.ContatoId == contato.Id);
+
+    // Retorna o contato com o endereço (se encontrado)
+    return Results.Ok(new
+    {
+        Contato = new
+        {
+            contato.Id,
+            contato.Nome,
+            contato.Email,
+            contato.Celular
+        },
+        Endereco = endereco is not null ? new
+        {
+            endereco.Estado,
+            endereco.Cidade,
+            endereco.Bairro,
+            endereco.Rua,
+            endereco.Numero
+        } : null
+    });
 });
 
 
@@ -180,7 +251,6 @@ app.MapPut("/api/contatos/alterar/{email}/{senha}/{numero}", ([FromRoute] string
     contatoExistente.Nome = contato.Nome;
     contatoExistente.Email = contato.Email;
     contatoExistente.Celular = contato.Celular;
-    contatoExistente.Endereco = contato.Endereco;
 
     ctx.Contatos.Update(contatoExistente);
     ctx.SaveChanges();
