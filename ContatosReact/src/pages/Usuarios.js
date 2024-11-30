@@ -126,10 +126,11 @@ function Usuarios() {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (email, senha) => {
+
     if (window.confirm('Tem certeza que deseja excluir este usuário?')) {
       try {
-        await api.delete(`/usuarios/excluir/${id}`);
+        await api.delete(`/usuarios/deletar/${email}/${senha}`);
         buscarUsuarios();
         alert('Usuário excluído com sucesso!');
       } catch (error) {
@@ -175,7 +176,7 @@ function Usuarios() {
           {usuarios.map((usuario) => (
             <UserItem key={usuario.id}>
               <span>{usuario.nome} - {usuario.email}</span>
-              <DeleteButton onClick={() => handleDelete(usuario.id)}>Excluir</DeleteButton>
+              <DeleteButton onClick={() => handleDelete(usuario.email, usuario.senha)}>Excluir</DeleteButton>
             </UserItem>
           ))}
         </UserList>
