@@ -52,11 +52,10 @@ Content-Type: application/json
 
 
 ### Listar contatos
-GET http://localhost:5144/api/contatos/listar
+POST http://localhost:5144/api/contatos/listar
 Content-Type: application/json
 
 {
-  "nome": "Leonardo Heredia",
   "email": "leoTeste@gmail.com",
   "senha": "abc123"
 }

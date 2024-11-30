@@ -120,6 +120,10 @@ function Usuarios() {
       setNovoUsuario({ nome: '', email: '', senha: '' });
       buscarUsuarios();
       alert('Usuário cadastrado com sucesso!');
+
+      localStorage.setItem("nomeUsuario", novoUsuario.nome);
+      localStorage.setItem("emailUsuario", novoUsuario.email);
+      localStorage.setItem("senhaUsuario", novoUsuario.senha);
     } catch (error) {
       console.error('Erro ao cadastrar usuário:', error);
       alert('Erro ao cadastrar usuário. Por favor, tente novamente.');

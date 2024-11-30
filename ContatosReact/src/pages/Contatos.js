@@ -1,7 +1,8 @@
-// src/pages/Contatos.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import InputMask from "react-input-mask";
+import api from "../services/api";
+import estadosBrasileiros from "../services/estados";
 import {
   FaUser,
   FaEnvelope,
@@ -168,6 +169,54 @@ const MaskedInput = styled(InputMask)`
   }
 `;
 
+const ModalBackdrop = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContent = styled.div`
+  background: ${(props) => props.theme.colors.surface};
+  padding: 20px;
+  border-radius: ${(props) => props.theme.borderRadius};
+  width: 400px;
+  box-shadow: ${(props) => props.theme.shadows.large};
+`;
+
+const Select = styled.select`
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 2px solid ${(props) => props.theme.colors.lightText};
+  border-radius: ${(props) => props.theme.borderRadius};
+`;
+
+const CloseButton = styled.button`
+  background: none;
+  border: none;
+  color: ${(props) => props.theme.colors.error};
+  font-size: 1.5em;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+`;
+
+const LoadingMessage = styled.p`
+  text-align: center;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  text-align: center;
+`;
+
 function Contatos() {
   const [contatos, setContatos] = useState([
     {
@@ -185,7 +234,6 @@ function Contatos() {
       endereco: "Av. B, 456",
     },
   ]);
-
   const [novoContato, setNovoContato] = useState({
     nome: "",
     email: "",
@@ -193,8 +241,67 @@ function Contatos() {
     endereco: "",
   });
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [enderecoDetalhado, setEnderecoDetalhado] = useState({
+    estado: "",
+    cidade: "",
+    bairro: "",
+    rua: "",
+    numero: "",
+  });
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const nome = localStorage.getItem("nomeUsuario");
+    const email = localStorage.getItem("emailUsuario");
+    const senha = localStorage.getItem("senhaUsuario");
+
+    console.log(nome, email, senha);
+
+    buscarContatos(nome, email, senha);
+  }, []);
+
+  const buscarContatos = async (e, email, senha) => {
+    setIsLoading(true);
+    setError(null);
+
+    const usuario = {
+      email: email,
+      senha: senha,
+    };
+
+    console.log("Buscando usuário:", usuario);
+
+    try {
+      const response = await api.post("/contatos/listar", usuario);
+      setContatos(response.data);
+      console.log("Contatos carregados:", response.data);
+    } catch (error) {
+      console.error("Erro ao buscar contatos:", error);
+
+      if (error.response && error.response.data) {
+        setError(error.response.data); // Mensagem do backend
+      } else {
+        setError(
+          "Não foi possível carregar os contatos. Por favor, tente novamente mais tarde."
+        );
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleInputChange = (e) => {
     setNovoContato({ ...novoContato, [e.target.name]: e.target.value });
+  };
+
+  const handleEnderecoChange = (e) => {
+    setEnderecoDetalhado({
+      ...enderecoDetalhado,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const adicionarContato = (e) => {
@@ -203,8 +310,13 @@ function Contatos() {
     setNovoContato({ nome: "", email: "", telefone: "", endereco: "" });
   };
 
-  const removerContato = (id) => {
-    setContatos(contatos.filter((contato) => contato.id !== id));
+  const salvarEndereco = () => {
+    const { estado, cidade, bairro, rua, numero } = enderecoDetalhado;
+    setNovoContato({
+      ...novoContato,
+      endereco: `${rua}, ${numero}, ${bairro}, ${cidade} - ${estado}`,
+    });
+    setIsModalOpen(false);
   };
 
   return (
@@ -259,7 +371,8 @@ function Contatos() {
             name="endereco"
             placeholder="Endereço"
             value={novoContato.endereco}
-            onChange={handleInputChange}
+            onClick={() => setIsModalOpen(true)}
+            readOnly
             required
           />
         </InputGroup>
@@ -267,25 +380,93 @@ function Contatos() {
           <FaPlus /> Adicionar Contato
         </Button>
       </Form>
-      <ContactList>
-        {contatos.map((contato) => (
-          <ContactItem key={contato.id}>
-            <ContactName>{contato.nome}</ContactName>
-            <ContactInfo>
-              <FaEnvelope /> {contato.email}
-            </ContactInfo>
-            <ContactInfo>
-              <FaPhone /> {contato.telefone}
-            </ContactInfo>
-            <ContactInfo>
-              <FaMapMarkerAlt /> {contato.endereco}
-            </ContactInfo>
-            <DeleteButton onClick={() => removerContato(contato.id)}>
-              <FaTrash />
-            </DeleteButton>
-          </ContactItem>
-        ))}
-      </ContactList>
+
+      {isLoading ? (
+        <LoadingMessage>Carregando contatos...</LoadingMessage>
+      ) : error ? (
+        <ErrorMessage>{error}</ErrorMessage>
+      ) : (
+        <ContactList>
+          {contatos.map((contato) => (
+            <ContactItem key={contato.id}>
+              <ContactName>{contato.nome}</ContactName>
+              <ContactInfo>
+                <FaEnvelope /> {contato.email}
+              </ContactInfo>
+              <ContactInfo>
+                <FaPhone /> {contato.celular}
+              </ContactInfo>
+              <ContactInfo>
+                <FaMapMarkerAlt />
+                {contato.endereco
+                  ? `${contato.endereco.rua}, ${contato.endereco.numero}, ${contato.endereco.bairro}, ${contato.endereco.cidade} - ${contato.endereco.estado}`
+                  : "Endereço não disponível"}
+              </ContactInfo>
+
+              <DeleteButton
+                onClick={() =>
+                  setContatos(contatos.filter((c) => c.id !== contato.id))
+                }
+              >
+                <FaTrash />
+              </DeleteButton>
+            </ContactItem>
+          ))}
+        </ContactList>
+      )}
+      {isModalOpen && (
+        <ModalBackdrop onClick={() => setIsModalOpen(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <CloseButton onClick={() => setIsModalOpen(false)}>
+              &times;
+            </CloseButton>
+            <h2>Detalhes do Endereço</h2>
+            <label>Estado</label>
+            <Select
+              name="estado"
+              value={enderecoDetalhado.estado}
+              onChange={handleEnderecoChange}
+            >
+              {estadosBrasileiros.map((estado) => (
+                <option key={estado} value={estado}>
+                  {estado}
+                </option>
+              ))}
+            </Select>
+            <label>Cidade</label>
+            <Input
+              type="text"
+              name="cidade"
+              value={enderecoDetalhado.cidade}
+              onChange={handleEnderecoChange}
+            />
+            <label>Bairro</label>
+            <Input
+              type="text"
+              name="bairro"
+              value={enderecoDetalhado.bairro}
+              onChange={handleEnderecoChange}
+            />
+            <label>Rua</label>
+            <Input
+              type="text"
+              name="rua"
+              value={enderecoDetalhado.rua}
+              onChange={handleEnderecoChange}
+            />
+            <label>Número</label>
+            <Input
+              type="text"
+              name="numero"
+              value={enderecoDetalhado.numero}
+              onChange={handleEnderecoChange}
+            />
+            <Button type="button" onClick={salvarEndereco}>
+              Salvar
+            </Button>
+          </ModalContent>
+        </ModalBackdrop>
+      )}
     </Container>
   );
 }
