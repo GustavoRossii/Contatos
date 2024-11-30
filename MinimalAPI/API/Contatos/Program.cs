@@ -61,7 +61,6 @@ app.MapPost("/api/contatos/cadastrar/{email}/{senha}", ([FromRoute] string email
         Nome = contato.Nome,
         Email = contato.Email,
         Celular = contato.Celular,
-        Endereco = contato.Endereco,
         AgendaId = agenda.Id,
         DataCadastro = DateTime.Now
     };
@@ -180,7 +179,6 @@ app.MapPut("/api/contatos/alterar/{email}/{senha}/{numero}", ([FromRoute] string
     contatoExistente.Nome = contato.Nome;
     contatoExistente.Email = contato.Email;
     contatoExistente.Celular = contato.Celular;
-    contatoExistente.Endereco = contato.Endereco;
 
     ctx.Contatos.Update(contatoExistente);
     ctx.SaveChanges();

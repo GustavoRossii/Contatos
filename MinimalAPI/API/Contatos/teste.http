@@ -18,17 +18,17 @@ GET http://localhost:5144/api/usuarios/listar
 ### Buscar usuario 
 GET http://localhost:5144/api/usuarios/buscar/leoTeste@gmail.com
 
-### Atualizar contato 
-PUT http://localhost:5144/api/usuarios/alterar/leoTeste@gmail.com/abc123
+### Atualizar usuario 
+PUT http://localhost:5144/api/usuarios/alterar/leoTeste@yahoo.com/abc123
 Content-Type: application/json
 
 {
   "nome": "Leonardo Heredia",
-  "email": "leoTeste@yahoo.com",
+  "email": "leoTeste@gmail.com",
   "senha": "abc123"
 }
 
-### Deletar contato 
+### Deletar usuario 
 DELETE http://localhost:5144/api/usuarios/deletar/leoTeste@gmail.com/abc123
 
 ### Cadastrar novo contato 
@@ -36,9 +36,9 @@ POST http://localhost:5144/api/contatos/cadastrar/leoTeste@gmail.com/abc123
 Content-Type: application/json
 
 {
-    "nome": "Manoel Gomes",
-    "email": "manoel@canetaazul.com",
-    "celular": "11987654321",
+    "nome": "Eduardo",
+    "email": "Eduardo@gmail.com",
+    "celular": "11987654322",
     "endereco": "Rua Professor Pedro Viriato Parigot de Souza 5300"
 }
 
@@ -65,12 +65,12 @@ Content-Type: application/json
 }
 
 ### Atualizar contato 
-PUT http://localhost:5144/api/contatos/alterar/leoTeste@gmail.com/abc123/11987654321
+PUT http://localhost:5144/api/contatos/alterar/leoTeste@gmail.com/abc123/11987654322
 Content-Type: application/json
 
 {
-    "nome": "Manoel Gomes aaa",
-    "email": "manoel@canetaazul.com",
+    "nome": "Eduardo",
+    "email": "Eduardo@Gmail.com",
     "celular": "11987654321",
     "endereco": "Rua Professor Pedro Viriato Parigot de Souza 5300"
 }

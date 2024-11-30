@@ -17,8 +17,6 @@ public class Contato
     [RegularExpression(@"^\d{11}$", ErrorMessage = "O celular deve ter 11 dígitos (com DDD).")]
     public string? Celular { get; set; }
 
-    public string? Endereco { get; set; }
-
     public DateTime DataCadastro { get; set; } = DateTime.Now;
 
 }
