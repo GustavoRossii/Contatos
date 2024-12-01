@@ -50,6 +50,21 @@ const Button = styled.button`
   }
 `;
 
+const ButtonCancelar = styled.button`
+  padding: 10px 20px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #c82333;
+  }
+`;
+
 const UserList = styled.ul`
   list-style-type: none;
   padding: 0;
@@ -80,6 +95,21 @@ const DeleteButton = styled.button`
   }
 `;
 
+const EditButton = styled.button`
+  padding: 5px 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    opacity: 0.9
+  }
+`;
+
 const ErrorMessage = styled.p`
   color: red;
   text-align: center;
@@ -94,6 +124,10 @@ function Usuarios() {
   const [novoUsuario, setNovoUsuario] = useState({ nome: '', email: '', senha: '' });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [emailOriginal, setEmailOriginal] = useState(''); // Estado para armazenar o email original
+  const [senhaOriginal, setSenhaOriginal] = useState(''); // Estado para armazenar a senha original
+  const [usuarioEditado, setUsuarioEditado] = useState(null)
+
 
   useEffect(() => {
     buscarUsuarios();
@@ -144,6 +178,41 @@ function Usuarios() {
     }
   };
 
+  const iniciarEdicao = (usuario) => {
+    setUsuarioEditado(usuario);
+    setEmailOriginal(usuario.email);  // Armazene o email original
+    setSenhaOriginal(usuario.senha);
+  };
+  
+
+  const handleEdit = async () => {
+    try {
+      await api.put(
+        `/usuarios/alterar/${emailOriginal}/${senhaOriginal}`,
+        {
+          nome: usuarioEditado.nome,
+          email: usuarioEditado.email,
+          senha: usuarioEditado.senha,
+        }
+      );
+      
+  
+      alert('Usuário atualizado com sucesso!');
+      buscarUsuarios(); // Atualiza a lista de usuários no estado
+      setUsuarioEditado(null); // Fecha o modal ou limpa o estado
+    } catch (error) {
+      console.error('Erro ao atualizar usuário:', error);
+      alert('Erro ao atualizar usuário. Tente novamente.');
+    }
+  };
+
+  const handleEditButtonClick = (usuario) => {
+    setUsuarioEditado(usuario); // Preenche o estado com os dados do usuário
+  };
+  
+  
+  
+
   return (
     <UsuariosContainer>
       <Title>Gerenciar Usuários</Title>
@@ -179,12 +248,44 @@ function Usuarios() {
         <UserList>
           {usuarios.map((usuario) => (
             <UserItem key={usuario.id}>
-              <span>{usuario.nome} - {usuario.email}</span>
+            <span>{usuario.nome} - {usuario.email}</span>
+            <div>
+              <EditButton onClick={() => iniciarEdicao(usuario)}>Editar</EditButton>
               <DeleteButton onClick={() => handleDelete(usuario.email, usuario.senha)}>Excluir</DeleteButton>
-            </UserItem>
+            </div>
+          </UserItem>
+          
           ))}
         </UserList>
       )}
+      {usuarioEditado && (
+        <Form onSubmit={handleEdit}>
+          <Input
+            type="text"
+            placeholder="Nome"
+            value={usuarioEditado.nome}
+            onChange={(e) => setUsuarioEditado({ ...usuarioEditado, nome: e.target.value })}
+            required
+          />
+          <Input
+            type="email"
+            placeholder="Email"
+            value={usuarioEditado.email}
+            onChange={(e) => setUsuarioEditado({ ...usuarioEditado, email: e.target.value })}
+            required
+          />
+          <Input
+            type="password"
+            placeholder="Senha"
+            value={usuarioEditado.senha}
+            onChange={(e) => setUsuarioEditado({ ...usuarioEditado, senha: e.target.value })}
+            required
+          />
+          <Button type="submit">Salvar Alterações</Button>
+          <ButtonCancelar type="button" onClick={() => setUsuarioEditado(null)}>Cancelar</ButtonCancelar>
+        </Form>
+)}
+
     </UsuariosContainer>
   );
 }

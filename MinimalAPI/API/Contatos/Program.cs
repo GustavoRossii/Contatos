@@ -107,6 +107,27 @@ app.MapPost("/api/contatos/cadastrar/{email}/{senha}", ([FromRoute] string email
     return Results.Created($"/api/contatos/{novoContato.Id}", new { Contato = novoContato, Endereco = novoEndereco });
 });
 
+app.MapDelete("/api/deletar/contato/{id:int}", async (int id, AppDataContext db) =>
+{
+    // Procura o contato pelo ID
+    var contato = await db.Contatos.FindAsync(id);
+
+    // Verifica se o contato existe
+    if (contato == null)
+    {
+        return Results.NotFound($"Contato com ID {id} não encontrado.");
+    }
+
+    // Remove o contato do banco de dados
+    db.Contatos.Remove(contato);
+    await db.SaveChangesAsync();
+
+    return Results.Ok($"Contato com ID {id} foi deletado com sucesso.");
+});
+
+
+
+
 
 // Listar os contatos
 app.MapPost("/api/contatos/listar", ([FromBody] Usuario usuario, [FromServices] AppDataContext ctx) =>
