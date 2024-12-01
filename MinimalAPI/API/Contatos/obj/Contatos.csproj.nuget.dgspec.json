@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\edufa\\Contatos\\MinimalAPI\\API\\Contatos\\Contatos.csproj": {}
+    "D:\\Contato\\Contatos\\MinimalAPI\\API\\Contatos\\Contatos.csproj": {}
   },
   "projects": {
-    "C:\\Users\\edufa\\Contatos\\MinimalAPI\\API\\Contatos\\Contatos.csproj": {
+    "D:\\Contato\\Contatos\\MinimalAPI\\API\\Contatos\\Contatos.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\edufa\\Contatos\\MinimalAPI\\API\\Contatos\\Contatos.csproj",
+        "projectUniqueName": "D:\\Contato\\Contatos\\MinimalAPI\\API\\Contatos\\Contatos.csproj",
         "projectName": "Contatos",
-        "projectPath": "C:\\Users\\edufa\\Contatos\\MinimalAPI\\API\\Contatos\\Contatos.csproj",
-        "packagesPath": "C:\\Users\\edufa\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\edufa\\Contatos\\MinimalAPI\\API\\Contatos\\obj\\",
+        "projectPath": "D:\\Contato\\Contatos\\MinimalAPI\\API\\Contatos\\Contatos.csproj",
+        "packagesPath": "C:\\Users\\GuhRo\\.nuget\\packages\\",
+        "outputPath": "D:\\Contato\\Contatos\\MinimalAPI\\API\\Contatos\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\edufa\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\GuhRo\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -73,7 +73,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
