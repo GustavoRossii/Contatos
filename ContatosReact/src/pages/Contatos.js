@@ -1,3 +1,4 @@
+// src/pages/Contatos.js
 import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import InputMask from "react-input-mask";
@@ -217,70 +218,75 @@ const ErrorMessage = styled.p`
   text-align: center;
 `;
 
+const UserSelector = styled.select`
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 2px solid ${(props) => props.theme.colors.lightText};
+  border-radius: ${(props) => props.theme.borderRadius};
+  font-size: 1em;
+  background-color: ${(props) => props.theme.colors.background};
+  color: ${(props) => props.theme.colors.text};
+`;
+
 function Contatos() {
-  const [contatos, setContatos] = useState([{}]);
+  const [contatos, setContatos] = useState([]);
   const [novoContato, setNovoContato] = useState({
     nome: "",
     email: "",
-    telefone: "",
-    estado: "",
-    cidade: "",
-    bairro: "",
-    rua: "",
-    numero: 0,
+    celular: "",
+    endereco: "",
   });
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [usuarioEmail, setUsuarioEmail] = useState("");
-  const [usuarioNome, setUsuarioNome] = useState("");
-  const [usuarioSenha, setUsuarioSenha] = useState("");
+  const [usuarios, setUsuarios] = useState([]);
+  const [selectedUser, setSelectedUser] = useState("");
 
   useEffect(() => {
-    setUsuarioNome(localStorage.getItem("nomeUsuario") || "");
-    setUsuarioEmail(localStorage.getItem("emailUsuario") || "");
-    setUsuarioSenha(localStorage.getItem("senhaUsuario") || "");
-
-    const nome = localStorage.getItem("nomeUsuario");
-    const email = localStorage.getItem("emailUsuario");
-    const senha = localStorage.getItem("senhaUsuario");
-
-    buscarContatos(nome, email, senha);
+    buscarUsuarios();
   }, []);
 
-  const buscarContatos = async (e, email, senha) => {
+  useEffect(() => {
+    if (selectedUser) {
+      buscarContatos();
+    }
+  }, [selectedUser]);
+
+  const buscarUsuarios = async () => {
+    try {
+      const response = await api.get("/usuarios/listar");
+      setUsuarios(response.data);
+      if (response.data.length > 0) {
+        setSelectedUser(response.data[0].email);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar usuários:", error);
+      setError("Não foi possível carregar os usuários.");
+    }
+  };
+
+  const buscarContatos = async () => {
     setIsLoading(true);
     setError(null);
 
-    const usuario = {
-      email: email,
-      senha: senha,
-    };
-
     try {
-      const response = await api.post("/contatos/listar", usuario);
+      const response = await api.post("/contatos/listar", {
+        email: selectedUser,
+        senha: "senha_padrao", // Você pode precisar ajustar isso dependendo da sua API
+      });
       setContatos(response.data);
-      console.log("Contatos carregados:", response.data);
     } catch (error) {
       console.error("Erro ao buscar contatos:", error);
-
-      if (error.response && error.response.data) {
-        setError(error.response.data); // Mensagem do backend
-      } else {
-        setError(
-          "Não foi possível carregar os contatos. Por favor, tente novamente mais tarde."
-        );
-      }
+      setError(
+        "Não foi possível carregar os contatos. Por favor, tente novamente mais tarde."
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleInputChange = (e) => {
-    console.log(novoContato);
-
     const { name, value } = e.target;
     setNovoContato((prev) => ({
       ...prev,
@@ -291,25 +297,37 @@ function Contatos() {
   const adicionarContato = async (e) => {
     e.preventDefault();
 
-    console.log("Novo Contato: ", novoContato);
-
     try {
       const response = await api.post(
-        `/contatos/cadastrar/${usuarioEmail}/${usuarioSenha}`,
+        `/contatos/cadastrar/${selectedUser}/senha_padrao`,
         novoContato
       );
-      setContatos((prev) => [...prev, response.data]); // Atualiza a lista de contatos
-      console.log("Contato cadastrado:", response.data);
+      setContatos((prev) => [...prev, response.data]);
+      setNovoContato({
+        nome: "",
+        email: "",
+        celular: "",
+        endereco: "",
+      });
+      alert("Contato adicionado com sucesso!");
     } catch (error) {
       console.error("Erro ao cadastrar contato:", error);
+      setError(
+        "Não foi possível cadastrar o contato. Por favor, tente novamente mais tarde."
+      );
+    }
+  };
 
-      if (error.response && error.response.data) {
-        setError(error.response.data); // Mensagem do backend
-      } else {
-        setError(
-          "Não foi possível cadastrar o contato. Por favor, tente novamente mais tarde."
-        );
-      }
+  const deletarContato = async (celular) => {
+    try {
+      await api.delete(`/contatos/deletar/${celular}`, {
+        data: { email: selectedUser, senha: "senha_padrao" },
+      });
+      setContatos((prev) => prev.filter((contato) => contato.celular !== celular));
+      alert("Contato deletado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao deletar contato:", error);
+      alert("Erro ao deletar contato. Por favor, tente novamente.");
     }
   };
 
@@ -320,6 +338,17 @@ function Contatos() {
   return (
     <Container>
       <Title>Gerenciar Contatos</Title>
+      <UserSelector
+        value={selectedUser}
+        onChange={(e) => setSelectedUser(e.target.value)}
+      >
+        <option value="">Selecione um usuário</option>
+        {usuarios.map((usuario) => (
+          <option key={usuario.id} value={usuario.email}>
+            {usuario.nome} ({usuario.email})
+          </option>
+        ))}
+      </UserSelector>
       <Form onSubmit={adicionarContato}>
         <InputGroup>
           <InputIcon>
@@ -353,9 +382,9 @@ function Contatos() {
           </InputIcon>
           <MaskedInput
             mask="(99) 99999-9999"
-            name="telefone"
-            placeholder="Telefone"
-            value={novoContato.telefone}
+            name="celular"
+            placeholder="Celular"
+            value={novoContato.celular}
             onChange={handleInputChange}
             required
           />
@@ -369,8 +398,7 @@ function Contatos() {
             name="endereco"
             placeholder="Endereço"
             value={novoContato.endereco}
-            onClick={() => setIsModalOpen(true)}
-            readOnly
+            onChange={handleInputChange}
             required
           />
         </InputGroup>
@@ -395,23 +423,16 @@ function Contatos() {
                 <FaPhone /> {contato.celular}
               </ContactInfo>
               <ContactInfo>
-                <FaMapMarkerAlt />
-                {contato.endereco
-                  ? `${contato.endereco.rua}, ${contato.endereco.numero}, ${contato.endereco.bairro}, ${contato.endereco.cidade} - ${contato.endereco.estado}`
-                  : "Endereço não disponível"}
+                <FaMapMarkerAlt /> {contato.endereco}
               </ContactInfo>
-
-              <DeleteButton
-                onClick={() =>
-                  setContatos(contatos.filter((c) => c.id !== contato.id))
-                }
-              >
+              <DeleteButton onClick={() => deletarContato(contato.celular)}>
                 <FaTrash />
               </DeleteButton>
             </ContactItem>
           ))}
         </ContactList>
       )}
+
       {isModalOpen && (
         <ModalBackdrop onClick={() => setIsModalOpen(false)}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
@@ -419,10 +440,9 @@ function Contatos() {
               &times;
             </CloseButton>
             <h2>Detalhes do Endereço</h2>
-            <label>Estado</label>
             <Select
               name="estado"
-              onChange={handleInputChange} // Corrigido
+              onChange={handleInputChange}
             >
               {estadosBrasileiros.map((estado) => (
                 <option key={estado} value={estado}>
@@ -430,14 +450,10 @@ function Contatos() {
                 </option>
               ))}
             </Select>
-            <label>Cidade</label>
-            <Input type="text" name="cidade" onChange={handleInputChange} />
-            <label>Bairro</label>
-            <Input type="text" name="bairro" onChange={handleInputChange} />
-            <label>Rua</label>
-            <Input type="text" name="rua" onChange={handleInputChange} />
-            <label>Número</label>
-            <Input type="text" name="numero" onChange={handleInputChange} />
+            <Input type="text" name="cidade" placeholder="Cidade" onChange={handleInputChange} />
+            <Input type="text" name="bairro" placeholder="Bairro" onChange={handleInputChange} />
+            <Input type="text" name="rua" placeholder="Rua" onChange={handleInputChange} />
+            <Input type="text" name="numero" placeholder="Número" onChange={handleInputChange} />
             <Button type="button" onClick={salvarEndereco}>
               Salvar
             </Button>

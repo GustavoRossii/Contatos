@@ -2381,19 +2381,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\leona\\.nuget\\packages\\": {}
+    "C:\\Users\\GuhRo\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\leona\\Documents\\Semestre\\DesSoftwareVisual\\Contatos\\MinimalAPI\\API\\Contatos\\Contatos.csproj",
+      "projectUniqueName": "D:\\Contato\\Contatos\\MinimalAPI\\API\\Contatos\\Contatos.csproj",
       "projectName": "Contatos",
-      "projectPath": "C:\\Users\\leona\\Documents\\Semestre\\DesSoftwareVisual\\Contatos\\MinimalAPI\\API\\Contatos\\Contatos.csproj",
-      "packagesPath": "C:\\Users\\leona\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\leona\\Documents\\Semestre\\DesSoftwareVisual\\Contatos\\MinimalAPI\\API\\Contatos\\obj\\",
+      "projectPath": "D:\\Contato\\Contatos\\MinimalAPI\\API\\Contatos\\Contatos.csproj",
+      "packagesPath": "C:\\Users\\GuhRo\\.nuget\\packages\\",
+      "outputPath": "D:\\Contato\\Contatos\\MinimalAPI\\API\\Contatos\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\leona\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\GuhRo\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -2415,9 +2415,8 @@
       "restoreAuditProperties": {
         "enableAudit": "true",
         "auditLevel": "low",
-        "auditMode": "all"
-      },
-      "SdkAnalysisLevel": "9.0.100"
+        "auditMode": "direct"
+      }
     },
     "frameworks": {
       "net8.0": {
@@ -2453,7 +2452,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
