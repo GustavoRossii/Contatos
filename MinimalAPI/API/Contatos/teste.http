@@ -19,16 +19,12 @@ GET http://localhost:5144/api/usuarios/listar
 GET http://localhost:5144/api/usuarios/buscar/leoTeste@gmail.com
 
 ### Atualizar usuario 
-<<<<<<< HEAD
 PUT http://localhost:5144/api/usuarios/alterar/leoTeste@gmail.com/abc123
-=======
-PUT http://localhost:5144/api/usuarios/alterar/leoTeste@yahoo.com/abc123
->>>>>>> bff8a5b9632a2a948b094aba605380917a248338
 Content-Type: application/json
 
 {
   "nome": "Leonardo Heredia",
-  "email": "leoTeste@gmail.com",
+  "email": "leoteste@gmail.com",
   "senha": "abc123"
 }
 
@@ -56,8 +52,8 @@ POST http://localhost:5144/api/contatos/listar
 Content-Type: application/json
 
 {
-  "email": "leoTeste@gmail.com",
-  "senha": "abc123"
+  "email": "leonardo@gmail.com",
+  "senha": "1234"
 }
 
 
