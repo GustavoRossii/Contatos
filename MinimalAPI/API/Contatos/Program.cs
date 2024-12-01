@@ -111,8 +111,6 @@ app.MapPost("/api/contatos/cadastrar/{email}/{senha}", ([FromRoute] string email
 // Listar os contatos
 app.MapPost("/api/contatos/listar", ([FromBody] Usuario usuario, [FromServices] AppDataContext ctx) =>
 {
-     Console.WriteLine($"Requisição recebida: Email{usuario.Email}, Senha{usuario.Senha}");
-
     if (usuario == null || string.IsNullOrWhiteSpace(usuario.Email) || string.IsNullOrWhiteSpace(usuario.Senha))
     {
         return Results.BadRequest("Email e senha são obrigatórios.");

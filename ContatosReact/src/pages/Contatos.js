@@ -218,47 +218,34 @@ const ErrorMessage = styled.p`
 `;
 
 function Contatos() {
-  const [contatos, setContatos] = useState([
-    {
-      id: 1,
-      nome: "João Silva",
-      email: "joao@email.com",
-      telefone: "(11) 99999-9999",
-      endereco: "Rua A, 123",
-    },
-    {
-      id: 2,
-      nome: "Maria Santos",
-      email: "maria@email.com",
-      telefone: "(11) 88888-8888",
-      endereco: "Av. B, 456",
-    },
-  ]);
+  const [contatos, setContatos] = useState([{}]);
   const [novoContato, setNovoContato] = useState({
     nome: "",
     email: "",
     telefone: "",
-    endereco: "",
-  });
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [enderecoDetalhado, setEnderecoDetalhado] = useState({
     estado: "",
     cidade: "",
     bairro: "",
     rua: "",
-    numero: "",
+    numero: 0,
   });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [usuarioEmail, setUsuarioEmail] = useState("");
+  const [usuarioNome, setUsuarioNome] = useState("");
+  const [usuarioSenha, setUsuarioSenha] = useState("");
 
   useEffect(() => {
+    setUsuarioNome(localStorage.getItem("nomeUsuario") || "");
+    setUsuarioEmail(localStorage.getItem("emailUsuario") || "");
+    setUsuarioSenha(localStorage.getItem("senhaUsuario") || "");
+
     const nome = localStorage.getItem("nomeUsuario");
     const email = localStorage.getItem("emailUsuario");
     const senha = localStorage.getItem("senhaUsuario");
-
-    console.log(nome, email, senha);
 
     buscarContatos(nome, email, senha);
   }, []);
@@ -271,8 +258,6 @@ function Contatos() {
       email: email,
       senha: senha,
     };
-
-    console.log("Buscando usuário:", usuario);
 
     try {
       const response = await api.post("/contatos/listar", usuario);
@@ -294,28 +279,41 @@ function Contatos() {
   };
 
   const handleInputChange = (e) => {
-    setNovoContato({ ...novoContato, [e.target.name]: e.target.value });
+    console.log(novoContato);
+
+    const { name, value } = e.target;
+    setNovoContato((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleEnderecoChange = (e) => {
-    setEnderecoDetalhado({
-      ...enderecoDetalhado,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const adicionarContato = (e) => {
+  const adicionarContato = async (e) => {
     e.preventDefault();
-    setContatos([...contatos, { ...novoContato, id: Date.now() }]);
-    setNovoContato({ nome: "", email: "", telefone: "", endereco: "" });
+
+    console.log("Novo Contato: ", novoContato);
+
+    try {
+      const response = await api.post(
+        `/contatos/cadastrar/${usuarioEmail}/${usuarioSenha}`,
+        novoContato
+      );
+      setContatos((prev) => [...prev, response.data]); // Atualiza a lista de contatos
+      console.log("Contato cadastrado:", response.data);
+    } catch (error) {
+      console.error("Erro ao cadastrar contato:", error);
+
+      if (error.response && error.response.data) {
+        setError(error.response.data); // Mensagem do backend
+      } else {
+        setError(
+          "Não foi possível cadastrar o contato. Por favor, tente novamente mais tarde."
+        );
+      }
+    }
   };
 
   const salvarEndereco = () => {
-    const { estado, cidade, bairro, rua, numero } = enderecoDetalhado;
-    setNovoContato({
-      ...novoContato,
-      endereco: `${rua}, ${numero}, ${bairro}, ${cidade} - ${estado}`,
-    });
     setIsModalOpen(false);
   };
 
@@ -424,8 +422,7 @@ function Contatos() {
             <label>Estado</label>
             <Select
               name="estado"
-              value={enderecoDetalhado.estado}
-              onChange={handleEnderecoChange}
+              onChange={handleInputChange} // Corrigido
             >
               {estadosBrasileiros.map((estado) => (
                 <option key={estado} value={estado}>
@@ -434,33 +431,13 @@ function Contatos() {
               ))}
             </Select>
             <label>Cidade</label>
-            <Input
-              type="text"
-              name="cidade"
-              value={enderecoDetalhado.cidade}
-              onChange={handleEnderecoChange}
-            />
+            <Input type="text" name="cidade" onChange={handleInputChange} />
             <label>Bairro</label>
-            <Input
-              type="text"
-              name="bairro"
-              value={enderecoDetalhado.bairro}
-              onChange={handleEnderecoChange}
-            />
+            <Input type="text" name="bairro" onChange={handleInputChange} />
             <label>Rua</label>
-            <Input
-              type="text"
-              name="rua"
-              value={enderecoDetalhado.rua}
-              onChange={handleEnderecoChange}
-            />
+            <Input type="text" name="rua" onChange={handleInputChange} />
             <label>Número</label>
-            <Input
-              type="text"
-              name="numero"
-              value={enderecoDetalhado.numero}
-              onChange={handleEnderecoChange}
-            />
+            <Input type="text" name="numero" onChange={handleInputChange} />
             <Button type="button" onClick={salvarEndereco}>
               Salvar
             </Button>
